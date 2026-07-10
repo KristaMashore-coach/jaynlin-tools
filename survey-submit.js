@@ -56,7 +56,7 @@
         contact_email: c.contact.email || '',
         contact_phone: c.contact.phone || '',
         listing_address: c.contact.address || '',
-        answers: c.answers.map(function(a){ return a.label + ': ' + a.value; }).join('\n')
+        answers: c.answers
       };
       var cfg = window.SF_CONFIG || {};
       if (cfg.endpoint) {

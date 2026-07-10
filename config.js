@@ -1,5 +1,5 @@
-// Jaynlin's settings. Answers go straight to her inbox (no account, no key).
+// Jaynlin's settings. Answers go to her inbox once her free key is pasted below.
 window.SF_CONFIG = {
   agentName: "Jaynlin Slone",
-  endpoint: "https://formsubmit.co/ajax/Jaynlin@kristahomes.com"
+  web3formsKey: "PASTE-JAYNLIN-KEY-HERE"
 };
