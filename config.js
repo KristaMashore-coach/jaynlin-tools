@@ -1,5 +1,6 @@
-// Jaynlin's settings. Answers go to her inbox once her free key is pasted below.
+// Jaynlin's settings. No secrets here. The keys (GoHighLevel + email) live as
+// environment variables on Vercel. This just points the forms at the function.
 window.SF_CONFIG = {
   agentName: "Jaynlin Slone",
-  web3formsKey: "PASTE-JAYNLIN-KEY-HERE"
+  endpoint: "/api/submit"
 };
