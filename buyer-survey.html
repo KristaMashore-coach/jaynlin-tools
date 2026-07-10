@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Buyer Survey</title>
+<style>
+  :root{
+    --bg:#FAF9F5;--surface:#FFFFFF;--ink:#141414;--muted:#454545;--line:#E7E3D9;
+    --gold:#B0862A;--gold-bright:#C9A54C;--gold-soft:#F6EFDC;--action:#141414;--action-press:#000000;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:520px;margin:0 auto;padding:0 0 128px;}
+
+  .hero{background:var(--surface);}
+  .band{height:150px;position:relative;overflow:hidden;background:radial-gradient(130% 100% at 22% 12%, #FFFDF6 0%, #FBF3DE 46%, #F3E7C6 100%);display:flex;align-items:center;justify-content:center;}
+  .band svg{width:120px;height:auto;}
+  .badge{position:absolute;top:14px;left:14px;background:var(--ink);color:#fff;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:6px 12px;border-radius:100px;}
+  .head{padding:18px 20px 6px;}
+  .head h1{margin:0;font-size:24px;line-height:1.2;letter-spacing:-.01em;}
+  .intro{padding:10px 20px 20px;color:var(--muted);font-size:16px;border-bottom:1px solid var(--line);}
+  .intro b{color:var(--ink);}
+
+  .card{background:var(--surface);margin:14px 12px 0;border:1px solid var(--line);border-radius:16px;padding:18px 16px;}
+  .step{font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--gold);margin:0 0 3px;}
+  .q{font-size:18px;font-weight:700;margin:0 0 4px;letter-spacing:-.01em;}
+  .note{font-size:14.5px;color:var(--muted);background:var(--gold-soft);border-radius:10px;padding:11px 13px;margin:0 0 16px;}
+  .field{margin-bottom:14px;}
+  .field:last-child{margin-bottom:0;}
+  .field label{display:block;font-size:14.5px;font-weight:650;color:var(--muted);margin-bottom:6px;}
+  .field label .opt{font-weight:400;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  input[type=text],input[type=email],input[type=tel],textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px 13px;font-size:16.5px;font-family:inherit;color:var(--ink);background:#fff;}
+  input:focus,textarea:focus{outline:none;border-color:var(--gold-bright);}
+  textarea{resize:vertical;min-height:74px;}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{appearance:none;border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:12px;padding:10px 15px;font-size:15px;font-weight:600;cursor:pointer;transition:all .12s ease;font-family:inherit;}
+  .chip:active{transform:scale(.97);}
+  .chip[aria-pressed="true"]{border-color:var(--gold-bright);background:var(--gold-soft);color:var(--ink);box-shadow:inset 0 0 0 1px var(--gold-bright);font-weight:750;}
+  .reveal{display:none;margin-top:12px;}
+  .reveal.show{display:block;}
+
+  .bar{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(180deg,rgba(250,249,245,0),var(--bg) 34%);padding:14px 12px calc(14px + env(safe-area-inset-bottom));}
+  .bar .inner{max-width:520px;margin:0 auto;}
+  .submit{width:100%;border:none;border-radius:14px;background:var(--action);color:#fff;font-size:18px;font-weight:750;padding:16px;cursor:pointer;font-family:inherit;letter-spacing:.01em;box-shadow:0 8px 20px rgba(20,20,20,.22);transition:background .12s,transform .1s;}
+  .submit:active{background:var(--action-press);transform:translateY(1px);}
+  .barhint{text-align:center;color:var(--muted);font-size:13px;margin-top:9px;}
+
+  .done{display:none;padding:60px 26px;text-align:center;}
+  .done.show{display:block;}
+  .done .mark{width:78px;height:78px;border-radius:50%;background:var(--gold-soft);color:var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;border:1.5px solid var(--gold-bright);}
+  .done h2{font-size:25px;margin:0 0 10px;letter-spacing:-.01em;}
+  .done p{color:var(--muted);font-size:16.5px;margin:0 auto;max-width:36ch;}
+  .skel{margin-top:26px;font-size:13px;color:#8a8578;background:#fff;border:1px dashed var(--line);border-radius:12px;padding:12px 14px;}
+</style>
+</head>
+<body>
+<form class="wrap" id="form" data-form="buyer-survey">
+
+  <div class="hero">
+    <div class="band">
+      <span class="badge">Buyer Survey</span>
+      <svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M26 48 L58 22 L90 48 L90 88 L26 88 Z" fill="#FFFFFF" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M20 52 L58 20 L96 52" fill="none" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/>
+        <rect x="50" y="64" width="16" height="24" rx="2" fill="#C9A54C" stroke="#141414" stroke-width="2.5"/>
+        <circle cx="86" cy="70" r="15" fill="#FBF4E2" stroke="#141414" stroke-width="2.5"/>
+        <line x1="97" y1="81" x2="108" y2="92" stroke="#141414" stroke-width="4" stroke-linecap="round"/>
+        <path d="M86 63 v14 M79 70 h14" stroke="#C9A54C" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="head"><h1 id="h1">Let's find your home</h1></div>
+    <div class="intro">Thanks for the chance to help you buy. A few quick questions so I can <b>line up the right homes and walk into our meeting with a plan.</b> Takes about 3 minutes. Skip anything you are not sure about.</div>
+  </div>
+
+  <!-- Step 1: about you -->
+  <div class="card">
+    <p class="step">Step 1</p>
+    <p class="q">About you</p>
+    <div class="grid2">
+      <div class="field"><label>Your name</label><input type="text" placeholder="First and last" /></div>
+      <div class="field"><label>Best phone <span class="opt">(optional)</span></label><input type="tel" placeholder="(555) 123-4567" /></div>
+    </div>
+    <div class="field"><label>Best email</label><input type="email" placeholder="you@example.com" /></div>
+    <div class="field">
+      <label>Are you currently working with another agent?</label>
+      <div class="chips" data-name="hasagent"><button type="button" class="chip">No</button><button type="button" class="chip">Yes</button></div>
+    </div>
+  </div>
+
+  <!-- Step 2: what you want -->
+  <div class="card">
+    <p class="step">Step 2</p>
+    <p class="q">What you're looking for</p>
+    <div class="grid2">
+      <div class="field"><label>Bedrooms you want</label><input type="text" placeholder="e.g. 3+" /></div>
+      <div class="field"><label>Bathrooms you want</label><input type="text" placeholder="e.g. 2+" /></div>
+    </div>
+    <div class="field">
+      <label>Type of home</label>
+      <div class="chips" data-name="type"><button type="button" class="chip">Single-family</button><button type="button" class="chip">Condo</button><button type="button" class="chip">Townhome</button><button type="button" class="chip">Multi-family</button><button type="button" class="chip">Land</button><button type="button" class="chip">No preference</button></div>
+    </div>
+    <div class="field"><label>Any neighborhoods or areas you're interested in?</label><textarea placeholder="Towns, school districts, near work, near family..."></textarea></div>
+    <div class="field"><label>Your must-haves and deal-breakers</label><textarea placeholder="Yard, garage, single-story, updated kitchen, no busy street..."></textarea></div>
+  </div>
+
+  <!-- Step 3: budget & financing -->
+  <div class="card">
+    <p class="step">Step 3</p>
+    <p class="q">Budget and financing</p>
+    <div class="field"><label>What's your price range?</label><input type="text" placeholder="e.g. $600k to $750k" /></div>
+    <div class="field">
+      <label>Have you been pre-approved?</label>
+      <div class="chips" data-name="preapproved">
+        <button type="button" class="chip" data-reveal="lenderName">Yes</button>
+        <button type="button" class="chip" data-reveal="lenderIntro">Not yet</button>
+        <button type="button" class="chip">Paying cash</button>
+      </div>
+      <div class="reveal" id="lenderName"><input type="text" placeholder="Who is your lender?" /></div>
+      <div class="reveal" id="lenderIntro"><div class="note" style="margin:0">No problem. Getting pre-approved first makes your offers stronger. I can connect you with a trusted lender if you'd like.</div></div>
+    </div>
+    <div class="field">
+      <label>Do you need to sell your current home first?</label>
+      <div class="chips" data-name="sellfirst"><button type="button" class="chip">No</button><button type="button" class="chip">Yes</button></div>
+    </div>
+  </div>
+
+  <!-- Step 4: timing & priorities -->
+  <div class="card">
+    <p class="step">Step 4</p>
+    <p class="q">Timing and what matters most</p>
+    <div class="field">
+      <label>When would you like to be moved in?</label>
+      <div class="chips" data-name="timeline"><button type="button" class="chip">As soon as possible</button><button type="button" class="chip">1 to 3 months</button><button type="button" class="chip">3 to 6 months</button><button type="button" class="chip">Just exploring</button></div>
+    </div>
+    <div class="field">
+      <label>Is this your first home purchase?</label>
+      <div class="chips" data-name="firsttime"><button type="button" class="chip">Yes</button><button type="button" class="chip">No</button></div>
+    </div>
+    <div class="field"><label>What's most important to you about buying?</label><textarea placeholder="A safe area, good schools, building equity, more space, a fresh start..."></textarea></div>
+    <div class="field"><label>Anything else you want me to know?</label><textarea placeholder="Anything at all that helps me help you"></textarea></div>
+  </div>
+
+  <div class="bar">
+    <div class="inner">
+      <button type="submit" class="submit">Send my answers</button>
+      <div class="barhint">Goes straight to your agent. It stays private.</div>
+    </div>
+  </div>
+</form>
+
+<div class="done" id="done">
+  <div class="mark"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg></div>
+  <h2>Thank you</h2>
+  <p>This gives me a real head start. I will come to our meeting with homes and a plan built around what matters to you.</p>
+  <div class="skel">Prototype note: this is the walking skeleton. Submitting here just shows this screen. It routes to the agent (email or GoHighLevel) on the same engine as the showing feedback tool.</div>
+</div>
+
+<script>
+  function singleSelect(group){
+    group.querySelectorAll('.chip').forEach(function(chip){
+      chip.addEventListener('click', function(){
+        var on = chip.getAttribute('aria-pressed')==='true';
+        group.querySelectorAll('.chip').forEach(function(c){ c.setAttribute('aria-pressed','false'); });
+        chip.setAttribute('aria-pressed', on ? 'false' : 'true');
+        group.querySelectorAll('.chip').forEach(function(c){ if(c.dataset.reveal){ var el=document.getElementById(c.dataset.reveal); if(el) el.classList.remove('show'); } });
+        if(chip.dataset.reveal && chip.getAttribute('aria-pressed')==='true'){ var t=document.getElementById(chip.dataset.reveal); if(t) t.classList.add('show'); }
+      });
+    });
+  }
+  document.querySelectorAll('.chips').forEach(singleSelect);
+
+
+</script>
+<script src="config.js"></script>
+<script src="survey-submit.js"></script>
+</body>
+</html>

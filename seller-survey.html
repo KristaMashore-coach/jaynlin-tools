@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Seller Survey</title>
+<style>
+  :root{
+    --bg:#FAF9F5;--surface:#FFFFFF;--ink:#141414;--muted:#454545;--line:#E7E3D9;
+    --gold:#B0862A;--gold-bright:#C9A54C;--gold-soft:#F6EFDC;--action:#141414;--action-press:#000000;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:520px;margin:0 auto;padding:0 0 128px;}
+
+  .hero{background:var(--surface);}
+  .band{height:150px;position:relative;overflow:hidden;background:radial-gradient(130% 100% at 22% 12%, #FFFDF6 0%, #FBF3DE 46%, #F3E7C6 100%);display:flex;align-items:center;justify-content:center;}
+  .band svg{width:118px;height:auto;}
+  .badge{position:absolute;top:14px;left:14px;background:var(--ink);color:#fff;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:6px 12px;border-radius:100px;}
+  .head{padding:18px 20px 6px;}
+  .head h1{margin:0;font-size:24px;line-height:1.2;letter-spacing:-.01em;}
+  .intro{padding:10px 20px 20px;color:var(--muted);font-size:16px;border-bottom:1px solid var(--line);}
+  .intro b{color:var(--ink);}
+
+  .card{background:var(--surface);margin:14px 12px 0;border:1px solid var(--line);border-radius:16px;padding:18px 16px;}
+  .step{font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--gold);margin:0 0 3px;}
+  .q{font-size:18px;font-weight:700;margin:0 0 4px;letter-spacing:-.01em;}
+  .note{font-size:14.5px;color:var(--muted);background:var(--gold-soft);border-radius:10px;padding:11px 13px;margin:0 0 16px;}
+  .field{margin-bottom:14px;}
+  .field:last-child{margin-bottom:0;}
+  .field label{display:block;font-size:14.5px;font-weight:650;color:var(--muted);margin-bottom:6px;}
+  .field label .opt{font-weight:400;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  input[type=text],input[type=email],input[type=tel],textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px 13px;font-size:16.5px;font-family:inherit;color:var(--ink);background:#fff;}
+  input:focus,textarea:focus{outline:none;border-color:var(--gold-bright);}
+  textarea{resize:vertical;min-height:74px;}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{appearance:none;border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:12px;padding:10px 15px;font-size:15px;font-weight:600;cursor:pointer;transition:all .12s ease;font-family:inherit;}
+  .chip:active{transform:scale(.97);}
+  .chip[aria-pressed="true"]{border-color:var(--gold-bright);background:var(--gold-soft);color:var(--ink);box-shadow:inset 0 0 0 1px var(--gold-bright);font-weight:750;}
+  .reveal{display:none;margin-top:12px;}
+  .reveal.show{display:block;}
+
+  .bar{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(180deg,rgba(250,249,245,0),var(--bg) 34%);padding:14px 12px calc(14px + env(safe-area-inset-bottom));}
+  .bar .inner{max-width:520px;margin:0 auto;}
+  .submit{width:100%;border:none;border-radius:14px;background:var(--action);color:#fff;font-size:18px;font-weight:750;padding:16px;cursor:pointer;font-family:inherit;letter-spacing:.01em;box-shadow:0 8px 20px rgba(20,20,20,.22);transition:background .12s,transform .1s;}
+  .submit:active{background:var(--action-press);transform:translateY(1px);}
+  .barhint{text-align:center;color:var(--muted);font-size:13px;margin-top:9px;}
+
+  .done{display:none;padding:60px 26px;text-align:center;}
+  .done.show{display:block;}
+  .done .mark{width:78px;height:78px;border-radius:50%;background:var(--gold-soft);color:var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;border:1.5px solid var(--gold-bright);}
+  .done h2{font-size:25px;margin:0 0 10px;letter-spacing:-.01em;}
+  .done p{color:var(--muted);font-size:16.5px;margin:0 auto;max-width:36ch;}
+  .skel{margin-top:26px;font-size:13px;color:#8a8578;background:#fff;border:1px dashed var(--line);border-radius:12px;padding:12px 14px;}
+</style>
+</head>
+<body>
+<form class="wrap" id="form" data-form="seller-survey">
+
+  <div class="hero">
+    <div class="band">
+      <span class="badge">Seller Survey</span>
+      <svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M24 46 L60 18 L96 46 L96 90 L24 90 Z" fill="#FFFFFF" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M18 50 L60 16 L102 50" fill="none" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M60 40 c-4-5-12-2-12 3 0 4 6 8 12 12 6-4 12-8 12-12 0-5-8-8-12-3 z" fill="#C9A54C" stroke="#141414" stroke-width="2"/>
+        <rect x="52" y="66" width="16" height="24" rx="2" fill="#C9A54C" stroke="#141414" stroke-width="2.5"/>
+      </svg>
+    </div>
+    <div class="head"><h1 id="h1">Getting ready for our meeting</h1></div>
+    <div class="intro">Thanks for considering me to sell your home. A few quick questions so I walk in <b>truly prepared, with a plan built around your home and your goals.</b> Takes about 3 minutes. Skip anything you are not sure about.</div>
+  </div>
+
+  <!-- Step 1: who -->
+  <div class="card">
+    <p class="step">Step 1</p>
+    <p class="q">You and your home</p>
+    <div class="grid2">
+      <div class="field"><label>Your name</label><input type="text" placeholder="First and last" /></div>
+      <div class="field"><label>Best phone <span class="opt">(optional)</span></label><input type="tel" placeholder="(555) 123-4567" /></div>
+    </div>
+    <div class="field"><label>Property address</label><input type="text" placeholder="Street, city" /></div>
+    <div class="field"><label>Best email</label><input type="email" placeholder="you@example.com" /></div>
+  </div>
+
+  <!-- Step 2: about the home -->
+  <div class="card">
+    <p class="step">Step 2</p>
+    <p class="q">About the home</p>
+    <p class="note">I can pull the tax records, but they are often wrong. If you know these, great. If not, no worries, I will verify.</p>
+    <div class="grid2">
+      <div class="field"><label>Bedrooms</label><input type="text" placeholder="e.g. 4" /></div>
+      <div class="field"><label>Bathrooms</label><input type="text" placeholder="e.g. 3" /></div>
+      <div class="field"><label>Square footage</label><input type="text" placeholder="e.g. 2,400" /></div>
+      <div class="field"><label>Lot size</label><input type="text" placeholder="e.g. 7,000 sq ft" /></div>
+    </div>
+  </div>
+
+  <!-- Step 3: upgrades & features -->
+  <div class="card">
+    <p class="step">Step 3</p>
+    <p class="q">Upgrades and features</p>
+    <div class="field"><label>What upgrades or improvements have you made?</label><textarea placeholder="Kitchen, baths, roof, HVAC, windows, floors, paint, landscaping, solar..."></textarea></div>
+
+    <div class="field">
+      <label>Do you have a pool or spa?</label>
+      <div class="chips" data-name="pool"><button type="button" class="chip">None</button><button type="button" class="chip">Pool</button><button type="button" class="chip">Spa</button><button type="button" class="chip">Both</button></div>
+    </div>
+
+    <div class="field">
+      <label>Do you have a view?</label>
+      <div class="chips" data-name="view"><button type="button" class="chip" data-reveal="viewText">Yes</button><button type="button" class="chip">No</button></div>
+      <div class="reveal" id="viewText"><input type="text" placeholder="What is the view? (hills, water, city, golf...)" /></div>
+    </div>
+
+    <div class="field">
+      <label>What is directly behind your home?</label>
+      <div class="chips" data-name="behind"><button type="button" class="chip">Neighbors</button><button type="button" class="chip">Open space / greenbelt</button><button type="button" class="chip">Water</button><button type="button" class="chip">Golf</button><button type="button" class="chip">Not sure</button></div>
+    </div>
+
+    <div class="field"><label>Anything else that makes your home stand out?</label><textarea placeholder="Corner lot, cul-de-sac, natural light, storage, RV parking..."></textarea></div>
+  </div>
+
+  <!-- Step 4: experience & priorities -->
+  <div class="card">
+    <p class="step">Step 4</p>
+    <p class="q">Your experience and what matters to you</p>
+    <div class="field">
+      <label>Have you sold a home before?</label>
+      <div class="chips" data-name="soldbefore"><button type="button" class="chip" data-reveal="lastAgent">Yes</button><button type="button" class="chip">No</button></div>
+    </div>
+    <div class="reveal field" id="lastAgent"><label>How was your experience with your last agent? What did you like, and what do you wish had been different?</label><textarea placeholder="Be honest, it helps me serve you better"></textarea></div>
+    <div class="field"><label>What is most important to you in the agent you hire?</label><textarea placeholder="Communication, marketing, negotiation, getting top dollar, a smooth process..."></textarea></div>
+    <div class="field"><label>Any concerns going into this?</label><textarea placeholder="Anything on your mind, big or small"></textarea></div>
+  </div>
+
+  <!-- Step 5: the numbers -->
+  <div class="card">
+    <p class="step">Step 5</p>
+    <p class="q">The numbers and your plans</p>
+    <p class="note">These help me understand your options and give you honest advice. Ballpark is fine, and it stays between us.</p>
+    <div class="field"><label>What do you feel your home is worth?</label><input type="text" placeholder="Your best guess" /></div>
+    <div class="field"><label>Roughly how much do you still owe on your mortgage?</label><input type="text" placeholder="Ballpark is fine, or 'paid off'" /></div>
+    <div class="field"><label>Any timeline or plans after you sell?</label><textarea placeholder="Buying next, relocating, downsizing, just exploring..."></textarea></div>
+    <div class="field">
+      <label>Would you need to stay in the home a while after closing (a rent-back)?</label>
+      <div class="chips" data-name="rentback"><button type="button" class="chip">No</button><button type="button" class="chip">Maybe</button><button type="button" class="chip">Yes</button></div>
+    </div>
+  </div>
+
+  <div class="bar">
+    <div class="inner">
+      <button type="submit" class="submit">Send my answers</button>
+      <div class="barhint">Goes straight to your agent. It stays private.</div>
+    </div>
+  </div>
+</form>
+
+<div class="done" id="done">
+  <div class="mark"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg></div>
+  <h2>Thank you</h2>
+  <p>This gives me a real head start. I will come to our meeting with a plan built around your home and your goals.</p>
+  <div class="skel">Prototype note: this is the walking skeleton. Submitting here just shows this screen. It routes to the agent (email or GoHighLevel) on the same engine as the showing feedback tool.</div>
+</div>
+
+<script>
+  function singleSelect(group){
+    group.querySelectorAll('.chip').forEach(function(chip){
+      chip.addEventListener('click', function(){
+        var on = chip.getAttribute('aria-pressed')==='true';
+        group.querySelectorAll('.chip').forEach(function(c){ c.setAttribute('aria-pressed','false'); });
+        chip.setAttribute('aria-pressed', on ? 'false' : 'true');
+        var rid = chip.dataset.reveal;
+        // hide any reveal owned by this group, then show the selected one
+        group.querySelectorAll('.chip').forEach(function(c){ if(c.dataset.reveal){ var el=document.getElementById(c.dataset.reveal); if(el) el.classList.remove('show'); } });
+        if(rid && chip.getAttribute('aria-pressed')==='true'){ var t=document.getElementById(rid); if(t) t.classList.add('show'); }
+      });
+    });
+  }
+  document.querySelectorAll('.chips').forEach(singleSelect);
+
+
+</script>
+<script src="config.js"></script>
+<script src="survey-submit.js"></script>
+</body>
+</html>

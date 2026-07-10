@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Showing Feedback: 1428 Camino Verde</title>
+<style>
+  :root{
+    --bg:#FAF9F5;
+    --surface:#FFFFFF;
+    --ink:#141414;
+    --muted:#454545;
+    --line:#E7E3D9;
+    --gold:#B0862A;          /* legible gold for small text */
+    --gold-bright:#C9A54C;   /* fills / borders */
+    --gold-soft:#F6EFDC;     /* selected background */
+    --action:#141414;        /* single primary action */
+    --action-press:#000000;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:520px;margin:0 auto;padding:0 0 128px;}
+
+  /* Header / house */
+  .hero{background:var(--surface);}
+  .photo{
+    height:210px;width:100%;position:relative;overflow:hidden;
+    background:
+      radial-gradient(130% 100% at 22% 12%, #FFFDF6 0%, #FBF3DE 46%, #F3E7C6 100%);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .photo svg{width:250px;height:auto;}
+  .badge{
+    position:absolute;top:14px;left:14px;background:var(--ink);color:#fff;
+    font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+    padding:6px 12px;border-radius:100px;
+  }
+  .addr{padding:18px 20px 6px;}
+  .addr h1{margin:0;font-size:23px;line-height:1.2;letter-spacing:-.01em;}
+  .addr .sub{color:var(--muted);font-size:15px;margin-top:3px;}
+  .intro{padding:12px 20px 20px;color:var(--muted);font-size:16px;border-bottom:1px solid var(--line);}
+  .intro b{color:var(--ink);}
+
+  .card{background:var(--surface);margin:14px 12px 0;border:1px solid var(--line);border-radius:16px;padding:18px 16px;}
+  .step{font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--gold);margin:0 0 3px;}
+  .q{font-size:18px;font-weight:700;margin:0 0 4px;letter-spacing:-.01em;}
+  .qsub{font-size:15px;color:var(--muted);margin:0 0 14px;}
+  .hint{color:var(--muted);font-size:14.5px;margin:-2px 0 14px;}
+
+  /* Buyer / agent segmented */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;}
+  .seg{
+    appearance:none;border:1.5px solid var(--line);background:#fff;border-radius:12px;
+    padding:13px 8px;cursor:pointer;font-family:inherit;font-size:15.5px;font-weight:650;color:var(--ink);
+    display:flex;align-items:center;justify-content:center;gap:8px;transition:all .12s ease;
+  }
+  .seg .ico{width:19px;height:19px;color:var(--muted);}
+  .seg[aria-pressed="true"]{border-color:var(--gold-bright);background:var(--gold-soft);box-shadow:inset 0 0 0 1px var(--gold-bright);}
+  .seg[aria-pressed="true"] .ico{color:var(--gold);}
+
+  .subhead{font-size:15px;font-weight:650;margin:0 0 10px;}
+
+  .idrow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  .idbtn{
+    appearance:none;border:1.5px solid var(--line);background:#fff;border-radius:12px;
+    padding:13px 8px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:650;color:var(--ink);
+    display:flex;flex-direction:column;align-items:center;gap:6px;transition:all .12s ease;text-align:center;line-height:1.2;
+  }
+  .idbtn .ico{width:20px;height:20px;color:var(--muted);}
+  .idbtn[aria-pressed="true"]{border-color:var(--gold-bright);background:var(--gold-soft);box-shadow:inset 0 0 0 1px var(--gold-bright);}
+  .idbtn[aria-pressed="true"] .ico{color:var(--gold);}
+  .idfields{margin-top:14px;display:none;}
+  .idfields.show{display:block;}
+  .field{margin-bottom:10px;}
+  .field label{display:block;font-size:14px;font-weight:650;color:var(--muted);margin-bottom:5px;}
+  input[type=text],input[type=email],textarea{
+    width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px 13px;
+    font-size:16.5px;font-family:inherit;color:var(--ink);background:#fff;
+  }
+  input:focus,textarea:focus{outline:none;border-color:var(--gold-bright);}
+  textarea{resize:vertical;min-height:74px;}
+  .anon-note{color:var(--muted);font-size:14px;background:var(--gold-soft);border-radius:10px;padding:10px 12px;margin-top:12px;display:none;}
+  .anon-note.show{display:block;}
+  .neighbor-offer{display:none;border:1.5px solid var(--gold-bright);background:linear-gradient(180deg,#fffdf7,#fbf4e2);border-radius:16px;padding:18px 16px;margin:14px 12px 0;}
+  .neighbor-offer.show{display:block;}
+  .no-head{font-size:18px;font-weight:750;margin:0 0 5px;letter-spacing:-.01em;}
+  .no-body{font-size:15.5px;color:var(--muted);margin:0 0 14px;}
+
+  /* Overall 1-10 */
+  .overall{border:1.5px solid var(--gold-bright);background:linear-gradient(180deg,#fffdf7,#fbf4e2);border-radius:14px;padding:15px 14px;margin-bottom:20px;}
+  .overall .q{margin-bottom:2px;}
+  .scale{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin-top:12px;}
+  .num{
+    appearance:none;border:1.5px solid #E2D6B4;background:#fff;border-radius:9px;
+    padding:10px 0;font-size:15.5px;font-weight:700;color:var(--ink);cursor:pointer;font-family:inherit;transition:all .1s ease;
+  }
+  .num:active{transform:scale(.94);}
+  .num[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--gold-bright);}
+  .scale-ends{display:flex;justify-content:space-between;margin-top:8px;font-size:12.5px;color:var(--muted);font-weight:600;}
+
+  /* Category chips */
+  .rate{margin-bottom:18px;}
+  .rate:last-child{margin-bottom:0;}
+  .rate .lab{font-weight:650;font-size:16px;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+  .rate .lab .ico{width:18px;height:18px;flex:none;color:var(--gold);}
+  .chips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .chip{
+    appearance:none;border:1.5px solid var(--line);background:#fff;color:var(--ink);
+    border-radius:12px;padding:11px 8px;font-size:15px;font-weight:600;cursor:pointer;
+    text-align:center;line-height:1.25;transition:all .12s ease;font-family:inherit;
+  }
+  .chip:active{transform:scale(.97);}
+  .chip[aria-pressed="true"]{border-color:var(--gold-bright);background:var(--gold-soft);color:var(--ink);box-shadow:inset 0 0 0 1px var(--gold-bright);font-weight:750;}
+
+  .bar{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(180deg,rgba(250,249,245,0),var(--bg) 34%);padding:14px 12px calc(14px + env(safe-area-inset-bottom));}
+  .bar .inner{max-width:520px;margin:0 auto;}
+  .submit{
+    width:100%;border:none;border-radius:14px;background:var(--action);color:#fff;
+    font-size:18px;font-weight:750;padding:16px;cursor:pointer;font-family:inherit;letter-spacing:.01em;
+    box-shadow:0 8px 20px rgba(20,20,20,.22);transition:background .12s ease,transform .1s ease;
+  }
+  .submit:active{background:var(--action-press);transform:translateY(1px);}
+  .barhint{text-align:center;color:var(--muted);font-size:13px;margin-top:9px;}
+
+  .done{display:none;padding:60px 26px;text-align:center;}
+  .done.show{display:block;}
+  .done .mark{width:78px;height:78px;border-radius:50%;background:var(--gold-soft);color:var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;border:1.5px solid var(--gold-bright);}
+  .done h2{font-size:25px;margin:0 0 10px;letter-spacing:-.01em;}
+  .done p{color:var(--muted);font-size:16.5px;margin:0 auto;max-width:34ch;}
+  .skel{margin-top:26px;font-size:13px;color:#8a8578;background:#fff;border:1px dashed var(--line);border-radius:12px;padding:12px 14px;}
+</style>
+</head>
+<body>
+<form class="wrap" id="form">
+
+  <div class="hero">
+    <div class="photo" id="hero-photo">
+      <div class="badge">Showing Feedback</div>
+      <svg viewBox="0 0 250 150" xmlns="http://www.w3.org/2000/svg" aria-label="House and key">
+        <!-- soft ground shadow -->
+        <ellipse cx="112" cy="132" rx="70" ry="9" fill="#E4D6AE" opacity=".55"/>
+        <!-- house body -->
+        <rect x="70" y="74" width="86" height="52" rx="3" fill="#FFFFFF" stroke="#141414" stroke-width="2.5"/>
+        <!-- roof -->
+        <path d="M60 78 L113 40 L166 78 Z" fill="#C9A54C" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/>
+        <!-- chimney -->
+        <rect x="142" y="50" width="11" height="20" rx="1.5" fill="#B0862A" stroke="#141414" stroke-width="2.5"/>
+        <!-- little heart on the gable -->
+        <path d="M113 60 c-3-4-9-2-9 2.5 0 3 4.5 6 9 9 4.5-3 9-6 9-9 0-4.5-6-6.5-9-2.5 z" fill="#141414"/>
+        <!-- door -->
+        <rect x="104" y="98" width="20" height="28" rx="2" fill="#C9A54C" stroke="#141414" stroke-width="2.5"/>
+        <circle cx="119" cy="112" r="1.8" fill="#141414"/>
+        <!-- windows -->
+        <rect x="80" y="86" width="16" height="16" rx="2" fill="#FBF4E2" stroke="#141414" stroke-width="2.5"/>
+        <path d="M88 86 v16 M80 94 h16" stroke="#141414" stroke-width="1.6"/>
+        <rect x="130" y="86" width="16" height="16" rx="2" fill="#FBF4E2" stroke="#141414" stroke-width="2.5"/>
+        <path d="M138 86 v16 M130 94 h16" stroke="#141414" stroke-width="1.6"/>
+        <!-- cute bushes -->
+        <circle cx="68" cy="123" r="8" fill="#EAD9A6" stroke="#141414" stroke-width="2"/>
+        <circle cx="158" cy="123" r="8" fill="#EAD9A6" stroke="#141414" stroke-width="2"/>
+
+        <!-- pretty vintage key, tilted -->
+        <g transform="rotate(28 205 92)">
+          <!-- bow: heart shape -->
+          <path d="M205 66 c-6-8-19-4-19 5 0 7 10 13 19 20 9-7 19-13 19-20 0-9-13-13-19-5 z"
+                fill="#C9A54C" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/>
+          <circle cx="205" cy="80" r="3.4" fill="#FBF4E2" stroke="#141414" stroke-width="1.8"/>
+          <!-- shaft -->
+          <rect x="202.6" y="92" width="4.8" height="42" rx="2.4" fill="#C9A54C" stroke="#141414" stroke-width="2.2"/>
+          <!-- teeth -->
+          <rect x="207" y="120" width="9" height="4.5" rx="1" fill="#C9A54C" stroke="#141414" stroke-width="2"/>
+          <rect x="207" y="128" width="6" height="4.5" rx="1" fill="#C9A54C" stroke="#141414" stroke-width="2"/>
+        </g>
+      </svg>
+    </div>
+    <div class="addr">
+      <h1 id="f-address">1428 Camino Verde</h1>
+      <div class="sub" id="f-sub">Walnut Creek, CA 94598 &middot; 4 bed &middot; 3 bath &middot; $1,395,000</div>
+    </div>
+    <div class="intro">Thanks for touring today. Your honest take helps us <b>price and position this home right</b>, and it goes straight to the listing agent. Takes under a minute.</div>
+  </div>
+
+  <!-- Step 1: who + identity -->
+  <div class="card">
+    <p class="step">Step 1</p>
+    <p class="q">Who's leaving feedback today?</p>
+    <p class="qsub">Everyone's welcome. It just helps us read your feedback.</p>
+    <div class="idrow" id="whorow" style="grid-template-columns:1fr 1fr;margin-bottom:18px">
+      <button type="button" class="idbtn" data-who="buyer" aria-pressed="false">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        Buyer, on my own
+      </button>
+      <button type="button" class="idbtn" data-who="buyer-repped" aria-pressed="false">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20c0-3 2.5-4.5 5.5-4.5s5.5 1.5 5.5 4.5"/><circle cx="17.6" cy="9" r="2.6"/><path d="M15 15.6c3 .2 5 1.6 5 4.4"/></svg>
+        Buyer, here with my agent
+      </button>
+      <button type="button" class="idbtn" data-who="agent" aria-pressed="false">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M8 8V6a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+        Buyer's agent
+      </button>
+      <button type="button" class="idbtn" data-who="touring" aria-pressed="false">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+        Just touring
+      </button>
+      <button type="button" class="idbtn" data-who="neighbor" aria-pressed="false" style="grid-column:1 / -1">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>
+        Neighbor just looking
+      </button>
+    </div>
+
+    <div class="anon-note" id="repped-note">You're here with your agent, so your feedback stays anonymous. We won't ask for your contact info.</div>
+
+    <div id="identity-block">
+    <p class="subhead">Would you like to add your name, brokerage only, or stay anonymous?</p>
+    <div class="idrow" id="idrow">
+      <button type="button" class="idbtn" data-id="named" aria-pressed="false">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        Add my name
+      </button>
+      <button type="button" class="idbtn" data-id="broker" aria-pressed="false">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21V9l7-5 7 5v12"/><path d="M9 21v-6h4v6"/></svg>
+        Brokerage only
+      </button>
+      <button type="button" class="idbtn" data-id="anon" aria-pressed="false">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 15c1-2 7-2 8 0"/><circle cx="9" cy="10" r="1" fill="currentColor"/><circle cx="15" cy="10" r="1" fill="currentColor"/></svg>
+        Stay anonymous
+      </button>
+    </div>
+
+    <div class="idfields" id="fields-named">
+      <div class="field"><label>Your name</label><input id="sf-name" type="text" placeholder="First and last" /></div>
+      <div class="field"><label>Brokerage <span style="font-weight:400">(if you have one)</span></label><input id="sf-brokerage" type="text" placeholder="Your company" /></div>
+      <div class="field"><label>Email <span style="font-weight:400">(optional, so the agent can reply)</span></label><input id="sf-email" type="email" placeholder="you@example.com" /></div>
+    </div>
+    <div class="idfields" id="fields-broker">
+      <div class="field"><label>Brokerage</label><input id="sf-brokerage2" type="text" placeholder="Your company" /></div>
+    </div>
+    <div class="anon-note" id="note-anon">You're anonymous. We won't collect your name, company, or email. Just your feedback.</div>
+    </div>
+  </div>
+
+  <!-- Step 2: overall + categories -->
+  <div class="card">
+    <p class="step">Step 2</p>
+
+    <div class="overall">
+      <p class="q">Overall, how would you rate this home?</p>
+      <p class="qsub" style="margin-bottom:0">10 is the best, 1 is the worst.</p>
+      <div class="scale" data-name="overall">
+        <button type="button" class="num">1</button>
+        <button type="button" class="num">2</button>
+        <button type="button" class="num">3</button>
+        <button type="button" class="num">4</button>
+        <button type="button" class="num">5</button>
+        <button type="button" class="num">6</button>
+        <button type="button" class="num">7</button>
+        <button type="button" class="num">8</button>
+        <button type="button" class="num">9</button>
+        <button type="button" class="num">10</button>
+      </div>
+      <div class="scale-ends"><span>1 = Not for me</span><span>10 = Loved it</span></div>
+    </div>
+
+    <p class="q" style="margin-bottom:2px">Your quick read on the home</p>
+    <p class="hint">Tap the one that fits. Skip any you're not sure about.</p>
+
+    <div class="rate">
+      <div class="lab"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5c0-1 1-1.5 2.5-1.5s2.5 .6 2.5 1.6c0 2.4-5 1.4-5 3.8 0 1 1 1.6 2.5 1.6s2.5-.5 2.5-1.5"/></svg>Price</div>
+      <div class="chips" data-name="price">
+        <button type="button" class="chip">Too high</button>
+        <button type="button" class="chip">About right</button>
+        <button type="button" class="chip">Great value</button>
+      </div>
+    </div>
+
+    <div class="rate">
+      <div class="lab"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-5h6v5"/></svg>Condition inside</div>
+      <div class="chips" data-name="condition">
+        <button type="button" class="chip">Needs work</button>
+        <button type="button" class="chip">Good</button>
+        <button type="button" class="chip">Move-in ready</button>
+      </div>
+    </div>
+
+    <div class="rate">
+      <div class="lab"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V10l7-5 7 5v11"/><path d="M3 12h4M17 12h4"/></svg>Curb appeal</div>
+      <div class="chips" data-name="curb">
+        <button type="button" class="chip">Weak</button>
+        <button type="button" class="chip">Good</button>
+        <button type="button" class="chip">Great</button>
+      </div>
+    </div>
+
+    <div class="rate">
+      <div class="lab"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-5-7-11a7 7 0 0114 0c0 6-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Location / neighborhood</div>
+      <div class="chips" data-name="location">
+        <button type="button" class="chip">Not for us</button>
+        <button type="button" class="chip">Okay</button>
+        <button type="button" class="chip">Love it</button>
+      </div>
+    </div>
+
+    <div class="rate">
+      <div class="lab"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 3 2 6 2s6-1 6-2v-5"/></svg>Schools</div>
+      <div class="chips" data-name="schools">
+        <button type="button" class="chip">A concern</button>
+        <button type="button" class="chip">Good</button>
+        <button type="button" class="chip">A draw</button>
+      </div>
+    </div>
+
+    <div class="rate">
+      <div class="lab"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 6.9H21l-5.3 4.1 2 6.9L12 16.7 6.3 20l2-6.9L3 8.9h6.6z"/></svg>Upgrades / finishes</div>
+      <div class="chips" data-name="upgrades">
+        <button type="button" class="chip">Dated</button>
+        <button type="button" class="chip">Okay</button>
+        <button type="button" class="chip">Impressive</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: open text -->
+  <div class="card">
+    <p class="step">Step 3</p>
+    <p class="q">In your words</p>
+    <div class="field"><label>What did you like most?</label><textarea id="sf-liked" placeholder="The kitchen, the yard, the light..."></textarea></div>
+    <div class="field"><label>What would you change?</label><textarea id="sf-change" placeholder="Anything that gave you pause"></textarea></div>
+    <div class="field"><label>Any questions for the listing agent or seller?</label><textarea id="sf-questions" placeholder="They'll follow up if you left contact info"></textarea></div>
+    <div class="field"><label>Anything else you'd like to report or share?</label><textarea id="sf-anything" placeholder="Anything at all, we'd love to hear it"></textarea></div>
+  </div>
+
+  <div class="neighbor-offer" id="neighbor-offer">
+    <p class="no-head">What's your home worth?</p>
+    <p class="no-body">Want a customizable Market Evaluation Epic Report on your own home, free? Drop your address and email and I'll get it right over to you.</p>
+    <div class="field"><label>Your home address</label><input id="sf-nb-address" type="text" placeholder="Where you live" /></div>
+    <div class="field"><label>Your email</label><input id="sf-nb-email" type="email" placeholder="you@example.com" /></div>
+  </div>
+
+  <div class="bar">
+    <div class="inner">
+      <button type="submit" class="submit">Send my feedback</button>
+      <div class="barhint">Goes straight to the listing agent. No account needed.</div>
+    </div>
+  </div>
+</form>
+
+<div class="done" id="done">
+  <div class="mark"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg></div>
+  <h2>Thank you</h2>
+  <p>Your feedback is on its way to the listing agent. It genuinely helps the seller see the home the way buyers do.</p>
+  <div class="skel">Prototype note: this is the walking skeleton. Submitting here just shows this screen. Email and saved report get wired in the next slices.</div>
+</div>
+
+<script>
+  function singleSelect(container, selector){
+    container.querySelectorAll(selector).forEach(function(el){
+      el.addEventListener('click', function(){
+        var on = el.getAttribute('aria-pressed')==='true';
+        container.querySelectorAll(selector).forEach(function(x){ x.setAttribute('aria-pressed','false'); });
+        el.setAttribute('aria-pressed', on ? 'false' : 'true');
+      });
+    });
+  }
+
+  // Buyer / agent / touring (keeps one selected)
+  var whorow = document.getElementById('whorow');
+  whorow.querySelectorAll('.idbtn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      whorow.querySelectorAll('.idbtn').forEach(function(b){ b.setAttribute('aria-pressed','false'); });
+      btn.setAttribute('aria-pressed','true');
+      var who = btn.dataset.who;
+      // Neighbor: soft "what's your home worth" offer at the very bottom, after the questions.
+      document.getElementById('neighbor-offer').classList.toggle('show', who==='neighbor');
+      // Compliance: a buyer who is here with their own agent is never asked for contact info.
+      var repped = (who==='buyer-repped');
+      document.getElementById('identity-block').style.display = repped ? 'none' : '';
+      document.getElementById('repped-note').classList.toggle('show', repped);
+    });
+  });
+
+  // Identity picker + conditional fields
+  var idrow = document.getElementById('idrow');
+  idrow.querySelectorAll('.idbtn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      idrow.querySelectorAll('.idbtn').forEach(function(b){ b.setAttribute('aria-pressed','false'); });
+      btn.setAttribute('aria-pressed','true');
+      var id = btn.dataset.id;
+      document.getElementById('fields-named').classList.toggle('show', id==='named');
+      document.getElementById('fields-broker').classList.toggle('show', id==='broker');
+      document.getElementById('note-anon').classList.toggle('show', id==='anon');
+    });
+  });
+
+  // Overall 1-10 (single select, allow toggle off)
+  document.querySelectorAll('.scale').forEach(function(group){ singleSelect(group,'.num'); });
+  // Category chips (single select per group)
+  document.querySelectorAll('.chips').forEach(function(group){ singleSelect(group,'.chip'); });
+
+  function pressedText(sel){ var el=document.querySelector(sel+' [aria-pressed="true"]'); return el?el.textContent.trim():''; }
+  function attrOf(sel,attr){ var el=document.querySelector(sel+' [aria-pressed="true"]'); return el?el.getAttribute(attr):''; }
+  function fieldVal(id){ var el=document.getElementById(id); return el?(el.value||'').trim():''; }
+
+  function buildPayload(){
+    var who = attrOf('#whorow','data-who');
+    var repped = (who==='buyer-repped');
+    var identity = repped ? 'anon' : attrOf('#idrow','data-id');
+    var name = (!repped && identity==='named') ? fieldVal('sf-name') : '';
+    var brokerage = repped ? '' : (identity==='named' ? fieldVal('sf-brokerage') : (identity==='broker' ? fieldVal('sf-brokerage2') : ''));
+    var email = (!repped && identity==='named') ? fieldVal('sf-email') : '';
+    var nbAddress = (who==='neighbor') ? fieldVal('sf-nb-address') : '';
+    var nbEmail = (who==='neighbor') ? fieldVal('sf-nb-email') : '';
+
+    var isNeighborLead = (who==='neighbor') && !!(nbEmail || nbAddress);
+    var isBuyerLead = (who==='buyer') && !!email;
+    var isLead = isNeighborLead || isBuyerLead;
+    var submissionType = isNeighborLead ? 'neighbor_lead' : (isBuyerLead ? 'buyer_lead' : 'feedback');
+
+    var params = new URLSearchParams(location.search);
+    var addrEl = document.getElementById('f-address');
+    return {
+      submission_type: submissionType,
+      is_lead: isLead,
+      visitor_type: who || '',
+      listing_address: addrEl ? addrEl.textContent : '',
+      listing_home_id: params.get('home') || '',
+      contact_name: name,
+      contact_email: isNeighborLead ? nbEmail : (isBuyerLead ? email : ''),
+      contact_brokerage: brokerage,
+      neighbor_home_address: nbAddress,
+      overall_rating: pressedText('.scale'),
+      rating_price: pressedText('.chips[data-name="price"]'),
+      rating_condition: pressedText('.chips[data-name="condition"]'),
+      rating_curb: pressedText('.chips[data-name="curb"]'),
+      rating_location: pressedText('.chips[data-name="location"]'),
+      rating_schools: pressedText('.chips[data-name="schools"]'),
+      rating_upgrades: pressedText('.chips[data-name="upgrades"]'),
+      liked_most: fieldVal('sf-liked'),
+      would_change: fieldVal('sf-change'),
+      questions: fieldVal('sf-questions'),
+      anything_else: fieldVal('sf-anything')
+    };
+  }
+
+  function routeSubmission(payload){
+    var cfg = window.SF_CONFIG || {};
+    // Server mode (GoHighLevel + email): post to the agent's own function, which keeps their keys secret
+    // and routes to email + the GoHighLevel API. Same-origin, so plain JSON is fine.
+    if(cfg.endpoint){
+      try{ fetch(cfg.endpoint, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)}); }catch(e){}
+      return;
+    }
+    // Simple mode (email only, no server): straight to the free email service.
+    if(cfg.web3formsKey){
+      var fd = new FormData();
+      fd.append('access_key', cfg.web3formsKey);
+      fd.append('subject', (payload.is_lead?'New LEAD':'Showing feedback')+' - '+payload.listing_address);
+      Object.keys(payload).forEach(function(k){ fd.append(k, String(payload[k])); });
+      try{ fetch('https://api.web3forms.com/submit', {method:'POST', body:fd}); }catch(e){}
+      return;
+    }
+    // Not configured (preview): nothing sends, just thank them.
+  }
+
+  document.getElementById('form').addEventListener('submit', function(e){
+    e.preventDefault();
+    try{ routeSubmission(buildPayload()); }catch(err){}
+    document.getElementById('form').style.display='none';
+    document.querySelector('.bar').style.display='none';
+    document.getElementById('done').classList.add('show');
+    window.scrollTo(0,0);
+  });
+</script>
+  <script src="config.js"></script>
+  <script>
+  (function(){
+    function qp(k){ return new URLSearchParams(location.search).get(k); }
+    var address = qp('address');
+    if(address){ document.getElementById('f-address').textContent = address; document.title = 'Showing Feedback: ' + address; }
+    var parts = [];
+    if(qp('city'))  parts.push(qp('city'));
+    if(qp('beds'))  parts.push(qp('beds') + ' bed');
+    if(qp('baths')) parts.push(qp('baths') + ' bath');
+    if(qp('price')){ var p = qp('price'); parts.push(p.charAt(0)==='$' ? p : '$'+p); }
+    if(parts.length){ document.getElementById('f-sub').innerHTML = parts.join(' \u00b7 '); }
+    var photo = qp('photo');
+    if(photo){
+      var hero = document.getElementById('hero-photo');
+      var svg = hero.querySelector('svg'); if(svg) svg.style.display = 'none';
+      var grad = qp('overlay') ? 'linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,0.6)),' : '';
+      hero.style.backgroundImage = grad + 'url("' + photo + '")';
+      hero.style.backgroundSize = 'cover'; hero.style.backgroundPosition = 'center';
+      if(qp('overlay')){
+        var band = document.createElement('div'); band.textContent = address || '';
+        band.style.cssText = 'position:absolute;left:0;right:0;bottom:0;padding:14px 18px;color:#fff;font-size:21px;font-weight:750;letter-spacing:-.01em;text-shadow:0 1px 6px rgba(0,0,0,0.55);';
+        hero.appendChild(band);
+      }
+    }
+  })();
+  </script>
+</body>
+</html>
