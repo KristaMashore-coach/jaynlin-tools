@@ -61,7 +61,8 @@
       var cfg = window.SF_CONFIG || {};
       if (cfg.endpoint) {
         fetch(cfg.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-      } else if (cfg.web3formsKey) {
+      }
+      if (cfg.web3formsKey) {
         // Static, email-only fallback (no server).
         var fd = new FormData();
         fd.append('access_key', cfg.web3formsKey);
