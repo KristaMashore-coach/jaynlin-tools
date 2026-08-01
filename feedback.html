@@ -452,9 +452,8 @@
     // and routes to email + the GoHighLevel API. Same-origin, so plain JSON is fine.
     if(cfg.endpoint){
       try{ fetch(cfg.endpoint, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)}); }catch(e){}
-      return;
     }
-    // Simple mode (email only, no server): straight to the free email service.
+    // Email leg always fires from the BROWSER (Web3Forms free plan rejects server-side sends).
     if(cfg.web3formsKey){
       var fd = new FormData();
       fd.append('access_key', cfg.web3formsKey);
